@@ -1,0 +1,47 @@
+main {
+  min-height: 90vh;
+  max-width: 100vw;
+  .img-container {
+    background-color: aquamarine;
+    width: 100%;
+    height: auto;
+    padding: 1rem;
+
+    position: relative;
+    img {
+      object-fit: contain;
+      max-width: 100%;
+      cursor: default;
+      cursor: url(../assets/cursor/point.png), crosshair;
+    }
+  }
+  .names-wrapper {
+    position: absolute;
+    border-radius: 10px;
+    display: none;
+    width: 11rem;
+    top: 0;
+    left: 0;
+    background-color: aliceblue;
+    font-size: 1rem;
+    &.visible {
+      display: block;
+    }
+    .char {
+      cursor: pointer;
+      height: 4rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 1rem;
+      .icon-container {
+        width: 2rem;
+        img {
+          cursor: inherit;
+          object-fit: contain;
+        }
+      }
+    }
+  }
+}
