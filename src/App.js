@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { BrowserRouter as BRouter, Route, Routes } from "react-router-dom";
 import Introduction from "./components/Introduction";
 import Main from "./components/Main";
@@ -6,33 +6,67 @@ import Header from "./components/Header";
 import "./components/general.styled.scss";
 import { CheckCoordContext } from "./components/CheckCoordContext";
 import { db } from "./firebase.config";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
+} from "firebase/firestore";
+import { imgURL } from "./imgSource";
 
-const imgURL =
-  " https://firebasestorage.googleapis.com/v0/b/wheres-waldo-3d4dc.appspot.com/o/main.jpg?alt=media&token=bf36ef96-575c-4f72-84b2-dd122c38fc6d";
 function App() {
   const [isImgLoading, setIsImgLoading] = useState(true);
+  const [isStarted, setIsStarted] = useState(false);
+  const [finishedCharacters, setFinishedCharacters] = useState([]);
 
-  const isWithinCoordinates = async (x, y, name) => {
-    // TODO get the checking part in the database later!
-    // TODO Fetch location of name
+  const timeRef = useRef(null);
 
-    const charCoords = {
-      waldo: { x: [1.22, 1.26], y: [9, 13] },
-      wizard: { x: [2.2, 2.3], y: [12.5, 1000] },
-      odlaw: { x: [16, 26], y: [1.25, 1.35] },
-    };
+  // * Firebase Functions must have CC in order to use it so validating on front end as an alternative.
+  const checkCoordinates = async (x, y, name) => {
     const charDocRef = doc(db, "characters", name);
-    const data = await getDoc(charDocRef);
-    console.log(data.data());
-    const isWithinX = Boolean(x >= 1.22 && x <= 1.26);
-    const isWithinY = Boolean(y >= 9 && y <= 13);
-    return isWithinX && isWithinY;
+    const res = await getDoc(charDocRef);
+    const {
+      x: [minX, maxX],
+      y: [minY, maxY],
+    } = res.data();
+    const isWithinX = Boolean(x >= minX && x <= maxX);
+    const isWithinY = Boolean(y >= minY && y <= maxY);
+
+    console.log(isWithinX && isWithinY);
+    if (isWithinX && isWithinY) {
+      setFinishedCharacters(name);
+    }
+    // return isWithinX && isWithinY;
+  };
+  useEffect(() => {
+    if (finishedCharacters.length === 3) {
+      // show endgame
+    }
+  }, [finishedCharacters]);
+  const handleOpen = () => {
+    setIsStarted(true);
   };
 
   const handleCompleteFetch = () => {
     setIsImgLoading(false);
   };
+
+  const startCounting = async () => {
+    const ref = await addDoc(collection(db, "users"), {
+      timestamp: serverTimestamp(),
+    });
+    console.log("i started counting on the server!", ref);
+    timeRef.current = ref;
+  };
+
+  useEffect(() => {
+    if (!isImgLoading && isStarted) {
+      //start the timer!
+      startCounting();
+    }
+  }, [isStarted]);
+
   const Leaderboard = lazy(() => import("./components/Leaderboard"));
 
   return (
@@ -43,9 +77,14 @@ function App() {
             path="/"
             element={
               <>
-                <Introduction isDisabled={isImgLoading} />
-                <Header />
-                <CheckCoordContext.Provider value={{ isWithinCoordinates }}>
+                <Introduction
+                  isDisabled={isImgLoading}
+                  handleOpen={handleOpen}
+                />
+                <Header characters={finishedCharacters} />
+                <CheckCoordContext.Provider
+                  value={{ isWithinCoordinates: checkCoordinates }}
+                >
                   <Main handleComplete={handleCompleteFetch} imgURL={imgURL} />
                 </CheckCoordContext.Provider>
               </>
