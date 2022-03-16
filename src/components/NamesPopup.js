@@ -6,12 +6,12 @@ import WaldoIcon from "../assets/img/waldo-icon.jpg";
 
 export default function NamesPopup({ position, display, handleRemove }) {
   const [isVisible, setIsVisible] = useState();
-  const { isWithinCoordinates } = useContext(CheckCoordContext);
+  const { handleCharClick } = useContext(CheckCoordContext);
   const { x, y, computedX, computedY } = position;
 
   useEffect(() => {
     setIsVisible(display);
-  });
+  }, [display]);
 
   const handleClick = async (e, name) => {
     e.stopPropagation();
@@ -19,7 +19,7 @@ export default function NamesPopup({ position, display, handleRemove }) {
     setIsVisible(false);
     handleRemove(false);
     console.log(computedX, computedY);
-    isWithinCoordinates(computedX, computedY, name);
+    handleCharClick(computedX, computedY, name);
   };
 
   const className = isVisible ? "names-wrapper visible" : "names-wrapper";

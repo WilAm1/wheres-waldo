@@ -6,6 +6,9 @@
 .sprite-wrapper {
   width: 4rem;
   height: 6rem;
+  &.clicked {
+    opacity: 0.2;
+  }
   img {
     object-fit: contain;
     max-height: 100%;

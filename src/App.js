@@ -5,21 +5,28 @@ import Main from "./components/Main";
 import Header from "./components/Header";
 import "./components/general.styled.scss";
 import { CheckCoordContext } from "./components/CheckCoordContext";
+import { UserContext } from "./components/UserContext";
 import { db } from "./firebase.config";
 import {
   doc,
   getDoc,
-  addDoc,
   collection,
   serverTimestamp,
+  updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { imgURL } from "./imgSource";
+import EndGame from "./components/EndGame";
+
+// TODO setup leaderboard component
+// TODO setup db query to show top timefinished
+// TODO add lazy loading on image
 
 function App() {
   const [isImgLoading, setIsImgLoading] = useState(true);
-  const [isStarted, setIsStarted] = useState(false);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [finishedCharacters, setFinishedCharacters] = useState([]);
-
+  const [isFinished, setIsFinished] = useState(false);
   const timeRef = useRef(null);
 
   // * Firebase Functions must have CC in order to use it so validating on front end as an alternative.
@@ -34,18 +41,42 @@ function App() {
     const isWithinY = Boolean(y >= minY && y <= maxY);
 
     console.log(isWithinX && isWithinY);
-    if (isWithinX && isWithinY) {
-      setFinishedCharacters(name);
-    }
-    // return isWithinX && isWithinY;
+    return isWithinX && isWithinY;
   };
+
+  const handleFinishTime = async () => {
+    await updateDoc(timeRef.current, {
+      timeEnded: serverTimestamp(),
+    });
+    setIsTimerRunning(false);
+    setIsFinished(true);
+  };
+
+  const handleCharClick = async (x, y, name) => {
+    if (finishedCharacters.indexOf(name) > -1) return;
+    const isClickCorrect = await checkCoordinates(x, y, name);
+    if (isClickCorrect) {
+      setFinishedCharacters((state) => [...state, name]);
+    }
+  };
+
   useEffect(() => {
+    // TODO  refactor later
     if (finishedCharacters.length === 3) {
       // show endgame
+      console.log("Finished All Characters!");
+
+      handleFinishTime();
     }
   }, [finishedCharacters]);
-  const handleOpen = () => {
-    setIsStarted(true);
+
+  const handleOpen = async () => {
+    if (!isImgLoading && !isFinished) {
+      //start the timer!
+      await startCounting();
+      setIsTimerRunning(true);
+      console.log("I started counting!");
+    }
   };
 
   const handleCompleteFetch = () => {
@@ -53,19 +84,13 @@ function App() {
   };
 
   const startCounting = async () => {
-    const ref = await addDoc(collection(db, "users"), {
-      timestamp: serverTimestamp(),
+    const ref = doc(collection(db, "users"));
+    await setDoc(ref, {
+      timeStarted: serverTimestamp(),
     });
-    console.log("i started counting on the server!", ref);
     timeRef.current = ref;
+    console.log("i started counting on the server!", ref);
   };
-
-  useEffect(() => {
-    if (!isImgLoading && isStarted) {
-      //start the timer!
-      startCounting();
-    }
-  }, [isStarted]);
 
   const Leaderboard = lazy(() => import("./components/Leaderboard"));
 
@@ -81,16 +106,31 @@ function App() {
                   isDisabled={isImgLoading}
                   handleOpen={handleOpen}
                 />
-                <Header characters={finishedCharacters} />
-                <CheckCoordContext.Provider
-                  value={{ isWithinCoordinates: checkCoordinates }}
-                >
-                  <Main handleComplete={handleCompleteFetch} imgURL={imgURL} />
+                <Header
+                  characters={finishedCharacters}
+                  isTimerRunning={isTimerRunning}
+                />
+                <CheckCoordContext.Provider value={{ handleCharClick }}>
+                  <Main
+                    handleComplete={handleCompleteFetch}
+                    imgURL={imgURL}
+                    isTimerRunning={isTimerRunning}
+                  />
                 </CheckCoordContext.Provider>
+                <UserContext.Provider value={{ timeRef: timeRef.current }}>
+                  <EndGame isFinished={isFinished} />
+                </UserContext.Provider>
               </>
             }
           ></Route>
-          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route
+            path="/leaderboard"
+            element={
+              <UserContext.Provider value={{ timeRef: timeRef.current }}>
+                <Leaderboard isFinished={isFinished} />
+              </UserContext.Provider>
+            }
+          />
           <Route path="*" element={<div>Not Found</div>} />
         </Routes>
       </Suspense>

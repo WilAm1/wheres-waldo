@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Main.styled.scss";
-import waldo from "../assets/img/main.jpg";
+// import waldo from "../assets/img/main.jpg";
 import NamesPopup from "./NamesPopup";
 
-// TODO Lazy Load the image
-// const Body = lazy(() => {
-//   return (
-//     <>
-//       {import("./components/Header")}
-//       {import("./components/Main")}
-//     </>
-//   );
-// });
-
-export default function Main({ handleComplete, imgURL }) {
+export default function Main({ handleComplete, imgURL, isTimerRunning }) {
   const [values, setValues] = useState({});
   const [displayPopup, setDisplayPopup] = useState(false);
 
   const handleClick = (e) => {
+    if (!isTimerRunning) return;
     const { left, top, width, height } = e.target.getBoundingClientRect();
     const [x, y] = [e.clientX - left, e.clientY - top];
     const computedX = width / (e.clientX - left);
@@ -34,16 +25,13 @@ export default function Main({ handleComplete, imgURL }) {
     return `Position X:${computedX} Position Y: ${computedY}`;
   };
 
-  // useEffect(() => {
-  //   handleComplete();
-  // }, []);
-
   return (
     <main>
       <p>{calculateAcceptable()}</p>
       <section className="img-container">
         <img
           src={imgURL}
+          // src={waldo}
           alt="waldo-pic"
           onClick={handleClick}
           onLoad={handleComplete}
