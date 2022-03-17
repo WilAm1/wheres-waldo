@@ -1,5 +1,9 @@
 # Where's Waldo App
 
+Visit the live demo
+
+> Click [here](https://wheres-waldo-3d4dc.web.app/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
