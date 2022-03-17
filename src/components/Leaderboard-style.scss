@@ -1,0 +1,59 @@
+@use "./colors/colors.scss" as *;
+
+header {
+  position: relative;
+}
+.leaderboard-section {
+  background-color: $color-light;
+  position: relative;
+  min-height: 100vh;
+  text-align: center;
+  .leaderboard {
+    .User-name {
+      color: $color-light;
+      font-size: 1.5rem;
+    }
+    .User-time {
+      color: $color-light;
+      font-size: 1.2rem;
+    }
+    &-user {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: $color-accent;
+      padding: 1rem;
+      .User-name {
+        color: $color-secondary;
+      }
+      .User-time {
+        color: $color-light;
+      }
+    }
+    &-users {
+      background-color: $color-light;
+      width: 50%;
+      margin: 1rem auto;
+      padding: initial;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      li {
+        padding: 1rem 0;
+        color: $color-accent;
+        list-style-position: inside;
+        background-color: $color-secondary;
+        border-radius: 10px;
+        &:nth-child(even) {
+          background-color: rgba($color-secondary, 0.7);
+        }
+        &.current-user {
+          background-color: $color-accent;
+          color: $color-light;
+        }
+      }
+    }
+  }
+}
+
+// CSS Add different colors on odd and even

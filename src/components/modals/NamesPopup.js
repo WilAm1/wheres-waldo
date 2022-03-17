@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
-import { CheckCoordContext } from "./CheckCoordContext";
-import OdlawIcon from "../assets/img/odlaw-icon.jpg";
-import WizardIcon from "../assets/img/wizard-icon.jpg";
-import WaldoIcon from "../assets/img/waldo-icon.jpg";
+import { CheckCoordContext } from "../contexts/CheckCoordContext";
+import OdlawIcon from "../../assets/img/odlaw-icon.jpg";
+import WizardIcon from "../../assets/img/wizard-icon.jpg";
+import WaldoIcon from "../../assets/img/waldo-icon.jpg";
 
 export default function NamesPopup({ position, display, handleRemove }) {
   const [isVisible, setIsVisible] = useState();

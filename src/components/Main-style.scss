@@ -1,12 +1,17 @@
+@use "./colors/colors.scss" as *;
+
 main {
+  margin-top: 20vh;
   min-height: 90vh;
   max-width: 100vw;
+
   .img-container {
-    background-color: aquamarine;
+    text-align: center;
+    background-color: aquaarine;
     width: 100%;
     height: auto;
     padding: 1rem;
-
+    background-color: $color-accent;
     position: relative;
     img {
       object-fit: contain;
@@ -22,7 +27,7 @@ main {
     width: 11rem;
     top: 0;
     left: 0;
-    background-color: aliceblue;
+    background-color: $color-light;
     font-size: 1rem;
     &.visible {
       display: block;

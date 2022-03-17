@@ -2,12 +2,12 @@ import { getDoc, updateDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../contexts/UserContext";
 
 export default function EndGame({ isFinished }) {
   const [name, setName] = useState("");
   const [show, setShow] = useState(false);
-  const [time, setTime] = useState("Calculating time finished...");
+  const [time, setTime] = useState();
   const { timeRef } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default function EndGame({ isFinished }) {
   const handleTime = async () => {
     const { timeStarted, timeEnded } = await fetchDate();
     const timePlaying = (timeEnded.toMillis() - timeStarted.toMillis()) / 1000;
-    setTime(`${timePlaying} seconds playing`);
+    setTime(`${timePlaying}`);
     updateDoc(timeRef, { span: timePlaying });
   };
 
@@ -48,9 +48,15 @@ export default function EndGame({ isFinished }) {
 
   return (
     <Modal show={show}>
-      <div className="modal-header">Congrats!</div>
-      <div className="modal-body">
-        <p>{time}</p>
+      <div className="modal-header">
+        <h4>Congrats!</h4>
+      </div>
+      <div className="modal-body end-game">
+        <p className="time-finished">
+          {time
+            ? `Finished in ${time} seconds! `
+            : "Calculating time finished..."}
+        </p>
         <form onSubmit={handleSubmit}>
           <input type="text" value={name} onChange={handleChange} />
           <button type="submit" disabled={!name}>

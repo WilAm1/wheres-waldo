@@ -1,16 +1,22 @@
 import { getDoc, getDocs } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "./UserContext";
-import { queryTop10 } from "../firebase.config";
-
-const TopScores = ({ users }) => {
+import { UserContext } from "./contexts/UserContext";
+import { queryTopScores } from "../firebase.config";
+import "./Leaderboard-style.scss";
+const TopScores = ({ users, currUserID }) => {
   return (
-    <ol>
+    <ol className="ordered-list leaderboard leaderboard-users">
       {users.map(({ userName, id, span }) => {
+        // Check if userName is equal to current user. highlight if true
+        const classNames =
+          currUserID === id
+            ? "leaderboard leaderboard-top-users current-user"
+            : "leaderboard leaderboard-top-users ";
+
         return (
-          <li key={id}>
-            <p>User Name: {userName}</p>
-            <p>Time Finished: {span}</p>
+          <li key={id} className={classNames}>
+            <span className="User-name">{userName}</span>
+            <p className="User-time">{span} seconds</p>
           </li>
         );
       })}
@@ -28,12 +34,12 @@ export default function Leaderboard({ isFinished }) {
       const res = await getDoc(timeRef);
       const { span, userName } = res.data();
       console.log(span);
-      setUserData({ span, userName });
+      setUserData({ span, userName, id: res.id });
     };
 
     const fetchTopUsers = async () => {
       console.log("iran");
-      const allUserDocs = await getDocs(queryTop10);
+      const allUserDocs = await getDocs(queryTopScores);
       const usersArray = allUserDocs.docs.map((doc) => {
         const id = doc.id;
         const { userName, span } = doc.data();
@@ -50,17 +56,19 @@ export default function Leaderboard({ isFinished }) {
   }, [isFinished]);
 
   if (isFinished) {
-    const { userName, span } = userData;
+    const { userName, span, id } = userData;
     return (
       <div>
-        <div className="heading">
+        <header className="heading">
           <h1>Leaderboard</h1>
-        </div>
-        <div class="body">
-          <TopScores users={topScores} />
-          <div className="User-name"> {userName} </div>
-          <div className="User-span"> {span} </div>
-        </div>
+        </header>
+        <section className="leaderboard-section">
+          <div className="leaderboard leaderboard-user">
+            <div className="User-name"> {userName} </div>
+            <div className="User-time"> {span} seconds </div>
+          </div>
+          <TopScores users={topScores} currUserID={id} />
+        </section>
       </div>
     );
   } else {

@@ -1,0 +1,67 @@
+@use "./colors/colors.scss" as *;
+
+header {
+  position: fixed;
+  padding: 1rem;
+  z-index: 1;
+  background-color: $color-light;
+  top: 0;
+  width: 100%;
+  max-height: 10rem;
+  border-bottom: 4px solid $color-secondary;
+
+  h2 {
+    color: $color-accent;
+    text-transform: uppercase;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .header-divider {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    .timer-wrapper {
+      color: $color-light;
+      font-weight: bold;
+      padding: 1rem 0;
+      width: 6rem;
+      text-align: center;
+      background-color: $color-secondary;
+      border: 1px solid $color-accent;
+      border-radius: 10px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .remaining-chars {
+      display: flex;
+      gap: 2rem;
+      color: $color-accent;
+      .character-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid $color-secondary;
+        border-radius: 5px;
+        box-shadow: 5px 7px 6px rgba(116, 114, 114, 0.322);
+        background-color: white;
+      }
+      .sprite-wrapper {
+        width: 4rem;
+        height: 5rem;
+
+        &.clicked {
+          opacity: 0.2;
+        }
+        img {
+          object-fit: contain;
+          max-height: 100%;
+          display: block;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}

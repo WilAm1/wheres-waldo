@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-// false
-// set to true
-// start the interval
-//
+
 export default function Timer({ toggle }) {
   const [time, setTime] = useState(0);
   const tick = () => {
@@ -10,15 +7,17 @@ export default function Timer({ toggle }) {
   };
   useEffect(() => {
     if (toggle) {
-      // start the interval
       const timerID = setInterval(() => tick(), 1000);
       return () => clearInterval(timerID);
     }
   }, [toggle]);
 
   return (
-    <div>
-      <p>Timer {time} seconds passed</p>
+    <div className="timer-wrapper">
+      <p>
+        {" "}
+        {parseInt(time / 60)} : {time % 60}{" "}
+      </p>
     </div>
   );
 }

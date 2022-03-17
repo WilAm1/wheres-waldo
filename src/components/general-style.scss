@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700;900&display=swap");
+
 *,
 *::before,
 *::after {
@@ -8,11 +10,12 @@
 
 body {
   box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
 }
 img {
   object-fit: contain;
   max-width: 100%;
 }
-ol{
+ol {
   margin-left: 1rem;
 }

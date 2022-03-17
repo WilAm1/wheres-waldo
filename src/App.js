@@ -1,11 +1,13 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { BrowserRouter as BRouter, Route, Routes } from "react-router-dom";
-import Introduction from "./components/Introduction";
+import Introduction from "./components/modals/Introduction";
 import Main from "./components/Main";
 import Header from "./components/Header";
-import "./components/general.styled.scss";
-import { CheckCoordContext } from "./components/CheckCoordContext";
-import { UserContext } from "./components/UserContext";
+import "./components/general-style.scss";
+import { CheckCoordContext } from "./components/contexts/CheckCoordContext";
+import { UserContext } from "./components/contexts/UserContext";
+import EndGame from "./components/modals/EndGame";
+import { imgURL } from "./imgSource";
 import { db } from "./firebase.config";
 import {
   doc,
@@ -15,12 +17,6 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
-import { imgURL } from "./imgSource";
-import EndGame from "./components/EndGame";
-
-// TODO setup leaderboard component
-// TODO setup db query to show top timefinished
-// TODO add lazy loading on image
 
 function App() {
   const [isImgLoading, setIsImgLoading] = useState(true);
@@ -63,16 +59,13 @@ function App() {
   useEffect(() => {
     // TODO  refactor later
     if (finishedCharacters.length === 3) {
-      // show endgame
       console.log("Finished All Characters!");
-
       handleFinishTime();
     }
   }, [finishedCharacters]);
 
   const handleOpen = async () => {
     if (!isImgLoading && !isFinished) {
-      //start the timer!
       await startCounting();
       setIsTimerRunning(true);
       console.log("I started counting!");

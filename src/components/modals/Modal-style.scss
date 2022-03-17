@@ -1,0 +1,81 @@
+@use "../colors/colors" as *;
+.modal {
+  display: none;
+  &.visible {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba($color-white, 0.8);
+    display: block;
+    z-index: 3;
+  }
+  .modal-header {
+    color: $color-accent;
+  }
+  .modal-content {
+    position: fixed;
+    padding: 1rem;
+    background: $color-light;
+    width: 80%;
+    height: auto;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .modal-body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.introduction {
+  .btn-start {
+    width: 8rem;
+    text-transform: uppercase;
+    border: 2px solid $color-secondary;
+    background-color: $color-accent;
+    border-radius: 10px;
+    padding: 1rem 0.5rem;
+    color: $color-light;
+    font-weight: 800;
+    transition: all ease-in-out 0.3s;
+
+    &:hover {
+      transform: translateY(-5px);
+      background-color: $color-secondary;
+    }
+  }
+}
+.end-game {
+  font-family: Arial, Helvetica, sans-serif;
+  .time-finished {
+    font-size: 1.2em;
+    color: $color-accent;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    input {
+      height: 2rem;
+    }
+    button {
+      display: block;
+      padding: 0.7rem;
+      background-color: $color-secondary;
+      color: $color-light;
+      font-weight: 800;
+      text-transform: uppercase;
+      border: 1px solid $color-accent;
+      &:disabled {
+        opacity: 0.5;
+        color: black;
+      }
+    }
+  }
+}

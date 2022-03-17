@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import "./Main.styled.scss";
-// import waldo from "../assets/img/main.jpg";
-import NamesPopup from "./NamesPopup";
+import "./Main-style.scss";
+import NamesPopup from "./modals/NamesPopup";
 
 export default function Main({ handleComplete, imgURL, isTimerRunning }) {
   const [values, setValues] = useState({});
@@ -17,17 +16,8 @@ export default function Main({ handleComplete, imgURL, isTimerRunning }) {
     setDisplayPopup(true);
   };
 
-  // * Delete later
-  const calculateAcceptable = () => {
-    if (!Object.keys(values).length) return "No Data yet";
-    const { computedX, computedY } = values;
-    // checkCoordinates
-    return `Position X:${computedX} Position Y: ${computedY}`;
-  };
-
   return (
     <main>
-      <p>{calculateAcceptable()}</p>
       <section className="img-container">
         <img
           src={imgURL}

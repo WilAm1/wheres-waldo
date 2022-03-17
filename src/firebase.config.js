@@ -25,8 +25,9 @@ const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 
-export const queryTop10 = query(
+const LIMIT = 20;
+export const queryTopScores = query(
   collection(db, "users"),
   orderBy("span"),
-  limit(10)
+  limit(LIMIT)
 );
